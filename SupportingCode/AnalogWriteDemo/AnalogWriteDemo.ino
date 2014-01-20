@@ -1,29 +1,43 @@
+// What range can the PWM output to the voltmeter?s
+ 
+const uint8_t hourPin   = 5; // these should be revisited to see what is acutaully best
+const uint8_t minutePin = 6;
 
-// These constants won't change.  They're used to give names
-// to the pins used:
-const int hourPin = 2; // these should be revisited to see what is acutaully best
-const int minutePin = 3;
-
-void setup() {
-  // set pins as outputs:
+void setup () {
+    // set pins as outputs:
   pinMode(minutePin, OUTPUT);
   pinMode(hourPin, OUTPUT);
+    Serial.begin(57600);
 }
+ 
+ uint8_t hourVal, hv;
+ uint8_t minuteVal, mv;
+ 
+void loop () {
 
-void loop() {
-  // iterate over the pins:
-  for (int thisPin = hourPin; thisPin <= minutePin; thisPin++) { 
-    // fade the LED on thisPin from off to brightest:
-    for (int brightness = 0; brightness < 255; brightness++) {
-      analogWrite(thisPin, brightness);
-      delay(2);
-    } 
-    // fade the LED on thisPin from brithstest to off:
-    for (int brightness = 255; brightness >= 0; brightness--) {
-      analogWrite(thisPin, brightness);
-      delay(2);
-    } 
-    // pause between LEDs:
-    delay(100);
+  for (hourVal=0; hourVal<24; hourVal++) {
+    for (minuteVal=0; minuteVal<60; minuteVal++) {
+  
+  hv = map(hourVal, 0, 23, 0, 255);
+  mv = map(minuteVal, 0, 59, 0, 255);
+   Serial.print(hourVal);
+   Serial.print(F("  --  "));
+      Serial.print(hv);
+   Serial.print(F("  ::  "));
+
+   Serial.print(minuteVal);
+     Serial.print(F("  --  "));
+      Serial.println(mv);
+      
+   analogWrite(hourPin, hv);
+   analogWrite(minutePin, mv);
+
+   
+    Serial.println();
+    delay(1000);
+    }
   }
+  
+    
+
 }
