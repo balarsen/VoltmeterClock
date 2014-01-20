@@ -1,21 +1,37 @@
+#include <TimerOne.h>
+
+
 // Date and time functions using a DS1307 RTC connected via I2C and Wire lib
  
 #include <Wire.h>
 #include <RTClib.h>
- 
+
 RTC_DS1307 RTC;
 
 const uint8_t hourPin   = 5; // these should be revisited to see what is acutaully best
 const uint8_t minutePin = 6;
+const uint8_t ledPin = 13;
 
 void makeISOdate(String *isodate, DateTime dt);
 
 char isotime[19];
 
+void blinkLED() {
+  uint8_t stat;
+ stat = digitalRead(ledPin);
+ digitalWrite(ledPin, stat ^ 1);
+}
+
 void setup () {
     // set pins as outputs:
   pinMode(minutePin, OUTPUT);
   pinMode(hourPin, OUTPUT);
+  
+  // setup the isr
+  pinMode(ledPin, OUTPUT);
+  Timer1.initialize(500000);  // 1/2 second period
+  Timer1.attachInterrupt(blinkLED);  // attaches callback() as a timer overflow interrupt
+
     Serial.begin(57600);
     Wire.begin();
  
